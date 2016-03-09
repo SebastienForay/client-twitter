@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="TwitterDotNet.Views.WebViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TwitterDotNet.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:TwitterDotNet.ViewModels" mc:Ignorable="d">
+
+    <Page.DataContext>
+        <vm:WebViewPageViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition MaxHeight="60"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Vous pourrez retourner à la pager d'accueil une fois que vous aurez copié le code PIN qui s'affichera dans la fenêtre." TextWrapping="Wrap" />
+        <WebView Grid.Row="1" Height="Auto" Width="Auto" Source="{Binding WebViewUriSource, Mode=TwoWay}" />
+    </Grid>
+</Page>
