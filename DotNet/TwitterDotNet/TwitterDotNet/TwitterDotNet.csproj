@@ -100,20 +100,26 @@
     </Compile>
     <Compile Include="Models\Timeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AccountManager\AccountData.cs" />
+    <Compile Include="Services\AccountManager\AccountManager.cs" />
+    <Compile Include="Services\AccountManager\IAccountManager.cs" />
     <Compile Include="Services\ImageLoader\IImageLoader.cs" />
     <Compile Include="Services\ImageLoader\ImageLoader.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Services\TweetinviAPI\TweetinviData.cs" />
     <Compile Include="ViewModels\DetailPageViewModel.cs" />
+    <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="ViewModels\UserProfilPageViewModel.cs" />
-    <Compile Include="ViewModels\WebViewPageViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -130,9 +136,6 @@
     <Compile Include="Views\UserProfilPage.xaml.cs">
       <DependentUpon>UserProfilPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WebViewPage.xaml.cs">
-      <DependentUpon>WebViewPage.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -140,7 +143,13 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\twitter-logo.png" />
+    <Content Include="Assets\icons\appbar.camera.png" />
+    <Content Include="Assets\icons\appbar.image.gallery.png" />
+    <Content Include="Assets\icons\appbar.page.search.png" />
+    <Content Include="Assets\icons\appbar.social.twitter.hashtag.png" />
+    <Content Include="Assets\icons\appbar.social.twitter.png" />
+    <Content Include="Assets\icons\appbar.social.twitter.retweet.png" />
+    <Content Include="Assets\icons\appbar.user.add.png" />
     <Content Include="Help.htm" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -171,6 +180,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\LoginPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -188,10 +201,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UserProfilPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\WebViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

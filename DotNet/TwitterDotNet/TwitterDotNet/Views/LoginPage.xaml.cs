@@ -20,9 +20,9 @@ namespace TwitterDotNet.Views
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.
     /// </summary>
-    public sealed partial class WebViewPage : Page
+    public sealed partial class LoginPage : Page
     {
-        public WebViewPage()
+        public LoginPage()
         {
             this.InitializeComponent();
         }
