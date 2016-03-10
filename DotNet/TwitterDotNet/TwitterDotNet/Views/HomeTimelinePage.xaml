@@ -100,7 +100,7 @@
         </StackPanel>
 -->
         <ScrollViewer Grid.Row="1">
-            <ListView Name="TweetsListView" ItemsSource="{Binding Tweets, Mode=TwoWay}">
+            <ListView Name="TweetsListView" ItemsSource="{Binding TweetsCollection}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapGrid Orientation="Horizontal" Margin="0"/>
