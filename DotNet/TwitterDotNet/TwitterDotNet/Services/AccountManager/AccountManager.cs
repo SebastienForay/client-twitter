@@ -43,16 +43,13 @@ namespace TwitterDotNet.Services.AccountManager
 
         public async Task SaveDataToFile()
         {
-            FolderOperation = CreationCollisionOption.ReplaceExisting;
             FileUsed = await FolderUsed.CreateFileAsync(FileName, FolderOperation);
             await FileIO.WriteTextAsync(FileUsed, JsonDataToSave);
         }
 
         public async Task LoadDataFromFile()
         {
-            FolderOperation = CreationCollisionOption.OpenIfExists;
-            FileUsed = await FolderUsed.CreateFileAsync(FileName, FolderOperation);
-
+            FileUsed = await FolderUsed.GetFileAsync(FileName);
             JsonDataLoaded = await FileIO.ReadTextAsync(FileUsed);
         }
 
