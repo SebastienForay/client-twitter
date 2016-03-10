@@ -49,7 +49,71 @@ namespace TwitterDotNet.ViewModels
         private static TwitterCredentials _appCredentials;
         public static TweetinviData TweetinviData { get { return _tweetinviData; } set { _tweetinviData = value; } }
         public static TwitterCredentials AppCredentials { get { return _appCredentials; } set { _appCredentials = value; } }
-        
+
+        // TopBar Primary Commands
+        private RelayCommand _gotoHomeTimelinePageCommand;
+        private RelayCommand _gotoNotificationsCommand;
+        private RelayCommand _gotoMessagesCommand;
+        private RelayCommand _gotoFindPeopleCommand;
+        private RelayCommand _gotoSearchCommand;
+
+        public RelayCommand GotoHomeTimelinePageCommand
+        {
+            get
+            {
+                if (_gotoHomeTimelinePageCommand == null)
+                    _gotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
+
+                return _gotoHomeTimelinePageCommand;
+            }
+            set { _gotoHomeTimelinePageCommand = value; RaisePropertyChanged(); }
+        }
+        public RelayCommand GotoNotificationsCommand
+        {
+            get
+            {
+                if (_gotoNotificationsCommand == null)
+                    _gotoNotificationsCommand = new RelayCommand(GotoHomeTimeline);
+
+                return _gotoNotificationsCommand;
+            }
+            set { _gotoNotificationsCommand = value; RaisePropertyChanged(); }
+        }
+        public RelayCommand GotoMessagesCommand
+        {
+            get
+            {
+                if (_gotoMessagesCommand == null)
+                    _gotoMessagesCommand = new RelayCommand(GotoHomeTimeline);
+
+                return _gotoMessagesCommand;
+            }
+            set { _gotoMessagesCommand = value; RaisePropertyChanged(); }
+        }
+        public RelayCommand GotoFindPeopleCommand
+        {
+            get
+            {
+                if (_gotoFindPeopleCommand == null)
+                    _gotoFindPeopleCommand = new RelayCommand(GotoHomeTimeline);
+
+                return _gotoFindPeopleCommand;
+            }
+            set { _gotoFindPeopleCommand = value; RaisePropertyChanged(); }
+        }
+        public RelayCommand GotoSearchCommand
+        {
+            get
+            {
+                if (_gotoSearchCommand == null)
+                    _gotoSearchCommand = new RelayCommand(GotoHomeTimeline);
+
+                return _gotoSearchCommand;
+            }
+            set { _gotoSearchCommand = value; RaisePropertyChanged(); }
+        }
+
+        // TopBar Secondary Commands
         private RelayCommand _gotoProfilPageCommand;
         public RelayCommand GotoProfilPageCommand
         {
@@ -61,18 +125,6 @@ namespace TwitterDotNet.ViewModels
                 return _gotoProfilPageCommand;
             }
             set { _gotoProfilPageCommand = value; RaisePropertyChanged(); }
-        }
-        private RelayCommand _gotoHomeTimelinePageCommand;
-        public RelayCommand GotoHomeTimelinePageCommand
-        {
-            get
-            {
-                if (_gotoHomeTimelinePageCommand == null)
-                    _gotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
-
-                return _gotoHomeTimelinePageCommand;
-            }
-            set { _gotoHomeTimelinePageCommand = value; RaisePropertyChanged(); }
         }
     }
 }
