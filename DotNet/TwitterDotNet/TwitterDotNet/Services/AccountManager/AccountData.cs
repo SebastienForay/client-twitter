@@ -12,7 +12,10 @@ namespace TwitterDotNet.Services.AccountManager
     {
         public AccountData()
         {
-            _iLoggedUser = User.GetAuthenticatedUser();
+            if (Auth.ApplicationCredentials != null)
+            {
+                _iLoggedUser = User.GetAuthenticatedUser();
+            }
         }
 
         private IAuthenticatedUser _iLoggedUser;

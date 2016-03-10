@@ -11,5 +11,7 @@ namespace TwitterDotNet.Services.AccountManager
     {
         void CreateJsonData();
         Task SaveDataToFile();
+        Task LoadDataFromFile();
+        void LoadAccountDataFromJson();
     }
 }

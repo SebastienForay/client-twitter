@@ -12,6 +12,7 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using TwitterDotNet.Services.AccountManager;
+using Windows.Storage;
 
 namespace TwitterDotNet.ViewModels
 {
@@ -19,7 +20,15 @@ namespace TwitterDotNet.ViewModels
     {
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            WebViewUriSource = new Uri(parameter.ToString());
+            var fileName = "accounts.json";
+            var folderUsed = ApplicationData.Current.LocalFolder;
+            var folderOperation = CreationCollisionOption.OpenIfExists;
+            var fileUsed = await folderUsed.CreateFileAsync(fileName, folderOperation);
+
+            if(fileUsed.IsAvailable)
+                AutoConnect();
+            else
+                WebViewUriSource = new Uri(parameter.ToString());
 
             await Task.CompletedTask;
         }
@@ -55,20 +64,44 @@ namespace TwitterDotNet.ViewModels
                 var userCredentials = CredentialsCreator.GetCredentialsFromVerifierCode(PinCode, MainPageViewModel.AppCredentials);
                 Auth.SetCredentials(userCredentials);
 
-                var loggedUser = User.GetAuthenticatedUser();
-
-                if (!String.IsNullOrEmpty(loggedUser.ScreenName))
+                if (Auth.ApplicationCredentials != null)
                 {
+                    var loggedUser = User.GetAuthenticatedUser();
 
-                    MainPageViewModel.TweetinviData.AccessToken = loggedUser.Credentials.AccessToken;
-                    MainPageViewModel.TweetinviData.AccessTokenSecret = loggedUser.Credentials.AccessTokenSecret;
+                    if (!String.IsNullOrEmpty(loggedUser.ScreenName))
+                    {
 
-                    AccountManager ac = new AccountManager();
-                    ac.CreateJsonData();
-                    await ac.SaveDataToFile();
+                        MainPageViewModel.TweetinviData.AccessToken = loggedUser.Credentials.AccessToken;
+                        MainPageViewModel.TweetinviData.AccessTokenSecret = loggedUser.Credentials.AccessTokenSecret;
 
-                    NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+                        AccountManager ac = new AccountManager();
+                        ac.CreateJsonData();
+                        await ac.SaveDataToFile();
+
+                        NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+                    }
                 }
+            }
+        }
+
+        private async void AutoConnect()
+        {
+            AccountManager ac = new AccountManager();
+            await ac.LoadDataFromFile();
+            ac.LoadAccountDataFromJson();
+
+            Auth.SetUserCredentials(
+                MainPageViewModel.TweetinviData.ConsumerKey,
+                MainPageViewModel.TweetinviData.ConsumerSecret,
+                ac.AccountData.AccountAccessToken,
+                ac.AccountData.AccountAccessTokenSecret
+            );
+
+            if (Auth.ApplicationCredentials != null)
+            {
+                var loggedUser = User.GetAuthenticatedUser();
+                if (!String.IsNullOrEmpty(loggedUser.ScreenName))
+                    NavigationService.Navigate(typeof(Views.HomeTimelinePage));
             }
         }
     }
