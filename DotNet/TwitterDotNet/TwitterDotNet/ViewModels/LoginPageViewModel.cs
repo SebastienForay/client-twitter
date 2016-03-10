@@ -67,7 +67,7 @@ namespace TwitterDotNet.ViewModels
                     ac.CreateJsonData();
                     await ac.SaveDataToFile();
 
-                    NavigationService.Navigate(typeof(Views.UserProfilPage));
+                    NavigationService.Navigate(typeof(Views.HomeTimelinePage));
                 }
             }
         }

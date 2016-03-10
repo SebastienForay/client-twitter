@@ -1,4 +1,4 @@
-using Template10.Mvvm;
+﻿using Template10.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,44 +12,51 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using TwitterDotNet.Services.AccountManager;
+using Tweetinvi.Core.Parameters;
+using Tweetinvi.Core.Interfaces;
 
 namespace TwitterDotNet.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class HomeTimelinePageViewModel : ViewModelBase
     {
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            AppCredentials = new TwitterCredentials(TweetinviData.ConsumerKey, TweetinviData.ConsumerSecret);
-            var url = CredentialsCreator.GetAuthorizationURL(AppCredentials);
-            Uri targeturi = new Uri(url);
+            if (Tweets == null)
+                FirstTimelineLoading();
+            else
+                TimelineReloading();
 
-            NavigationService.Navigate(typeof(Views.LoginPage), targeturi);
+            await Task.CompletedTask;
+        }
+
+        private void FirstTimelineLoading()
+        {
+            HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 10;
+            Tweets = Timeline.GetHomeTimeline(HomeTlParameters);
+        }
+
+        private void TimelineReloading()
+        {
+            HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 10;
+            HomeTlParameters.SinceId = Tweets.ElementAt(0).Id;
             
-            await Task.CompletedTask;
-        }
-
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {
-            await Task.CompletedTask;
-        }
-
-        public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
-        {
-            args.Cancel = false;
-            await Task.CompletedTask;
+            var newTweets = Timeline.GetHomeTimeline(HomeTlParameters);
+            newTweets = newTweets.Concat(Tweets);
+            Tweets = newTweets;
         }
 
         public void GotoSettings() => NavigationService.Navigate(typeof(Views.SettingsPage), 0);
         public void GotoPrivacy() => NavigationService.Navigate(typeof(Views.SettingsPage), 1);
         public void GotoAbout() => NavigationService.Navigate(typeof(Views.SettingsPage), 2);
         private void GotoProfilPage() => NavigationService.Navigate(typeof(Views.UserProfilPage));
-        private void GotoHomeTimeline() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoHomeTimeline() => TimelineReloading();
 
-        private static TweetinviData _tweetinviData = new TweetinviData();
-        private static TwitterCredentials _appCredentials;
-        public static TweetinviData TweetinviData { get { return _tweetinviData; } set { _tweetinviData = value; } }
-        public static TwitterCredentials AppCredentials { get { return _appCredentials; } set { _appCredentials = value; } }
+        private HomeTimelineParameters _homeTlParameters = new HomeTimelineParameters();
+        public HomeTimelineParameters HomeTlParameters { get { return _homeTlParameters; } set { _homeTlParameters = value; } }
         
+        private IEnumerable<ITweet> _tweets;
+        public IEnumerable<ITweet> Tweets { get { return _tweets; } set { _tweets = value; RaisePropertyChanged(); } }
+
         private RelayCommand _gotoProfilPageCommand;
         public RelayCommand GotoProfilPageCommand
         {
@@ -76,4 +83,3 @@ namespace TwitterDotNet.ViewModels
         }
     }
 }
-

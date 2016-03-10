@@ -1,51 +1,29 @@
-<Page x:Class="TwitterDotNet.Views.MainPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:Behaviors="using:Template10.Behaviors"
-      xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-      xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-      xmlns:controls="using:Template10.Controls"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="using:TwitterDotNet.Views"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:vm="using:TwitterDotNet.ViewModels" mc:Ignorable="d">
+﻿<Page
+    x:Class="TwitterDotNet.Views.HomeTimelinePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TwitterDotNet.Views"
+    xmlns:Behaviors="using:Template10.Behaviors"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:TwitterDotNet.ViewModels"
+    xmlns:interfaces="using:Tweetinvi.Core.Interfaces"
+    mc:Ignorable="d">
 
     <Page.DataContext>
-        <vm:MainPageViewModel x:Name="ViewModel" />
+        <vm:HomeTimelinePageViewModel x:Name="ViewModel" />
     </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
-                <VisualState x:Name="VisualStateNarrow">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <!--  TODO: change properties for narrow view  -->
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="VisualStateNormal">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <!--  TODO: change properties for normal view  -->
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="VisualStateWide">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <!--  TODO: change properties for wide view  -->
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-
-
-        <controls:PageHeader x:Name="pageHeader">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <controls:PageHeader x:Name="pageHeader" Grid.Row="0">
             <controls:PageHeader.PrimaryCommands>
                 <AppBarButton Label="Home" Command="{Binding GotoHomeTimelinePageCommand, Mode=TwoWay}">
                     <AppBarButton.Icon>
@@ -83,12 +61,29 @@
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Voir les listes" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Temps forts" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Comptes" />
-                <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Param�tres" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Paramètres" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Aide" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
+
+        <ScrollViewer Grid.Row="1" Width="Auto">
+            <ListView Name="TweetsListView" ItemsSource="{Binding Tweets, Mode=TwoWay}">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapGrid Orientation="Horizontal" Margin="0"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="interfaces:ITweet">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </Page>
-
