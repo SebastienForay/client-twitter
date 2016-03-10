@@ -67,8 +67,39 @@
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
-
-        <ScrollViewer Grid.Row="1" Width="Auto">
+<!--
+        <StackPanel Grid.Row="1"  Orientation="Vertical" Height="auto">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
+                        <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
+                        <TextBlock Margin="0, 2, 0, 0" Text="{x:Bind CreatedBy.UserIdentifier.ScreenName}" FontSize="13" />
+                    </StackPanel>
+                    <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
+                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                    <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"></Image>
+                </Button>
+                <Button Padding="-2, -3, 0, 0" Width="75" Height="25" Margin="10, 0, 10, 0">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"></Image>
+                        <TextBlock Text="{x:Bind RetweetCount}" />
+                    </StackPanel>
+                </Button>
+                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"></Image>
+                        <TextBlock Text="{x:Bind Favoritecount}" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+-->
+        <ScrollViewer Grid.Row="1">
             <ListView Name="TweetsListView" ItemsSource="{Binding Tweets, Mode=TwoWay}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -77,9 +108,35 @@
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="interfaces:ITweet">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                            <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{x:Bind CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
+                                        <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
+                                        <TextBlock Margin="0, 2, 0, 0" Text="{x:Bind CreatedBy.UserIdentifier.ScreenName}" FontSize="13" />
+                                    </StackPanel>
+                                    <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
+                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                                    <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"></Image>
+                                </Button>
+                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25" Margin="10, 0, 10, 0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"></Image>
+                                        <TextBlock Text="{x:Bind RetweetCount}" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"></Image>
+                                        <TextBlock Text="{x:Bind FavoriteCount}" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
