@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using TwitterDotNet.Services.AccountManager;
 using Tweetinvi.Core.Parameters;
 using Tweetinvi.Core.Interfaces;
+using System.Collections.ObjectModel;
 
 namespace TwitterDotNet.ViewModels
 {
@@ -39,10 +40,12 @@ namespace TwitterDotNet.ViewModels
         {
             HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 10;
             HomeTlParameters.SinceId = Tweets.ElementAt(0).Id;
-            
+
             var newTweets = Timeline.GetHomeTimeline(HomeTlParameters);
-            newTweets = newTweets.Concat(Tweets);
-            Tweets = newTweets;
+            foreach (var tweet in newTweets)
+            {
+                TweetsCollection.Insert(0, tweet);
+            }
         }
 
         public void GotoSettings() => NavigationService.Navigate(typeof(Views.SettingsPage), 0);
@@ -55,7 +58,27 @@ namespace TwitterDotNet.ViewModels
         public HomeTimelineParameters HomeTlParameters { get { return _homeTlParameters; } set { _homeTlParameters = value; } }
         
         private IEnumerable<ITweet> _tweets;
-        public IEnumerable<ITweet> Tweets { get { return _tweets; } set { _tweets = value; RaisePropertyChanged(); } }
+        public IEnumerable<ITweet> Tweets
+        {
+            get { return _tweets; }
+            set
+            {
+                _tweets = value;
+                foreach (var tweet in Tweets)
+                {
+                    TweetsCollection.Add(tweet);
+                }
+            }
+        }
+
+
+        private ObservableCollection<ITweet> _tweetsCollection;
+        public ObservableCollection<ITweet> TweetsCollection
+        {
+            get { return _tweetsCollection; }
+            set { _tweetsCollection = value; RaisePropertyChanged(); }
+        }
+
 
         private RelayCommand _gotoProfilPageCommand;
         public RelayCommand GotoProfilPageCommand

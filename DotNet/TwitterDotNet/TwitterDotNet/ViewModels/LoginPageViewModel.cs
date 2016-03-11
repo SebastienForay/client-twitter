@@ -20,27 +20,38 @@ namespace TwitterDotNet.ViewModels
     {
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            Views.Busy.SetBusy(true, "Veuillez patienter ...");
+
             var fileName = "accounts.json";
             var folderUsed = ApplicationData.Current.LocalFolder;
             var folderOperation = CreationCollisionOption.OpenIfExists;
             var fileUsed = await folderUsed.CreateFileAsync(fileName, folderOperation);
 
-            if(fileUsed.IsAvailable)
+            if (fileUsed.IsAvailable)
+            {
+                Views.Busy.SetBusy(true, "Reconnexion en cours ...");
                 AutoConnect();
+            }
             else
+            {
                 WebViewUriSource = new Uri(parameter.ToString());
+                PinCodeTextBoxVisibility = Visibility.Visible;
+                ValidateButtonVisibility = Visibility.Visible;
+            }
+
+            Views.Busy.SetBusy(false);
 
             await Task.CompletedTask;
         }
 
+        private Visibility _pinCodeTextBoxVisibility = Visibility.Collapsed;
+        private Visibility _validateButtonVisibility = Visibility.Collapsed;
+        public Visibility PinCodeTextBoxVisibility { get { return _pinCodeTextBoxVisibility; } set { _pinCodeTextBoxVisibility = value; RaisePropertyChanged(); } }
+        public Visibility ValidateButtonVisibility { get { return _validateButtonVisibility; } set { _validateButtonVisibility = value; RaisePropertyChanged(); } }
+        
         private Uri _webviewUriSource;
-        public Uri WebViewUriSource
-        {
-            get { return _webviewUriSource; }
-            set { _webviewUriSource = value; RaisePropertyChanged(); }
-        }
-
-
+        public Uri WebViewUriSource { get { return _webviewUriSource; } set { _webviewUriSource = value; RaisePropertyChanged(); } }
+        
         private RelayCommand _validatePinCodeCommand;
         public RelayCommand ValidatePinCodeCommand
         {
