@@ -113,6 +113,7 @@
     <Compile Include="ViewModels\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
+    <Compile Include="ViewModels\TweetingPageViewModel.cs" />
     <Compile Include="ViewModels\UserProfilPageViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
@@ -138,6 +139,9 @@
     <Compile Include="Views\Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TweetingPage.xaml.cs">
+      <DependentUpon>TweetingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserProfilPage.xaml.cs">
       <DependentUpon>UserProfilPage.xaml</DependentUpon>
     </Compile>
@@ -149,11 +153,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\icons\appbar.camera.png" />
+    <Content Include="Assets\icons\appbar.heart.png" />
     <Content Include="Assets\icons\appbar.image.gallery.png" />
+    <Content Include="Assets\icons\appbar.message.png" />
     <Content Include="Assets\icons\appbar.page.search.png" />
     <Content Include="Assets\icons\appbar.social.twitter.hashtag.png" />
     <Content Include="Assets\icons\appbar.social.twitter.png" />
     <Content Include="Assets\icons\appbar.social.twitter.retweet.png" />
+    <Content Include="Assets\icons\appbar.undo.point.png" />
     <Content Include="Assets\icons\appbar.user.add.png" />
     <Content Include="Help.htm" />
     <Content Include="Properties\Default.rd.xml" />
@@ -206,6 +213,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Splash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TweetingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

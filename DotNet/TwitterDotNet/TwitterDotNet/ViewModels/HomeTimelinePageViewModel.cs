@@ -16,6 +16,8 @@ using Tweetinvi.Core.Interfaces;
 using Tweetinvi.Logic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Windows.UI;
+using Windows.UI.Xaml.Media;
 
 namespace TwitterDotNet.ViewModels
 {
@@ -34,6 +36,7 @@ namespace TwitterDotNet.ViewModels
             GotoTweetingPageCommand = new RelayCommand(GotoTweetingPage);
 
             RetweetCommand = new RelayCommand<object>(param => Retweet((string)param));
+            LikeCommand = new RelayCommand<object>(param => Like((string)param));
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -79,12 +82,41 @@ namespace TwitterDotNet.ViewModels
         // Tweets Commands
         private RelayCommand<object> _retweetCommand;
         public RelayCommand<object> RetweetCommand { get { return _retweetCommand; } set { _retweetCommand = value; } }
-
+        private RelayCommand<object> _likeCommand;
+        public RelayCommand<object> LikeCommand { get { return _likeCommand; } set { _likeCommand = value; } }
+     
         private void Retweet(object tweetIdStr)
         {
             var tweetId = Convert.ToInt64(tweetIdStr);
-            Tweetinvi.Tweet.PublishRetweet((long)tweetId);
+
+            var tweetLocal = TweetsCollection.Single(i => i.Id == tweetId);
+            var tweetBeforRT = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+            
+            if (tweetBeforRT.Retweeted) Tweetinvi.Tweet.UnRetweet(tweetId);
+            else Tweetinvi.Tweet.PublishRetweet((long)tweetId);
+
+            var tweetAfterRT = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            TweetsCollection.Insert(TweetsCollection.IndexOf(tweetLocal), tweetAfterRT);
+            TweetsCollection.Remove(tweetLocal);
         }
+        private void Like(object tweetIdStr)
+        {
+            var tweetId = Convert.ToInt64(tweetIdStr);
+
+            var tweetLocal = TweetsCollection.Single(i => i.Id == tweetId);
+
+            var tweetBeforLike = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            if (tweetBeforLike.Favorited) Tweetinvi.Tweet.UnFavoriteTweet(tweetId);
+            else Tweetinvi.Tweet.FavoriteTweet((long)tweetId);
+
+            var tweetAfterLike = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            TweetsCollection.Insert(TweetsCollection.IndexOf(tweetLocal), tweetAfterLike);
+            TweetsCollection.Remove(tweetLocal);
+        }
+
 
         // TopBar Primary Commands
         private RelayCommand _gotoHomeTimelinePageCommand;
