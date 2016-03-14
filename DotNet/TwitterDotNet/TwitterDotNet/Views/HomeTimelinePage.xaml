@@ -10,7 +10,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:TwitterDotNet.ViewModels"
-    xmlns:interfaces="using:Tweetinvi.Core.Interfaces"
     mc:Ignorable="d">
 
     <Page.DataContext>
@@ -21,31 +20,32 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        
-        <controls:PageHeader x:Name="pageHeader" Grid.Row="0">
+
+        <controls:PageHeader x:Name="pageHeader">
             <controls:PageHeader.PrimaryCommands>
-                <AppBarButton Label="Home" Command="{Binding GotoHomeTimelinePageCommand, Mode=TwoWay}">
+                <AppBarButton Label="Home" Command="{x:Bind ViewModel.GotoHomeTimelinePageCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.social.twitter.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Notifications" Command="{Binding GotoNotificationsCommand, Mode=TwoWay}">
+                <AppBarButton Label="Notifications" Command="{x:Bind ViewModel.GotoNotificationsCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.camera.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Messages" Command="{Binding GotoMessagesCommand, Mode=TwoWay}">
+                <AppBarButton Label="Messages" Command="{x:Bind ViewModel.GotoMessagesCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.image.gallery.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Trouver des personnes" Command="{Binding GotoFindPeopleCommand, Mode=TwoWay}">
+                <AppBarButton Label="Trouver des personnes" Command="{x:Bind ViewModel.GotoFindPeopleCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.user.add.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Rechercher" Command="{Binding GotoSearchCommand, Mode=TwoWay}">
+                <AppBarButton Label="Rechercher" Command="{x:Bind ViewModel.GotoSearchCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.page.search.png" />
                     </AppBarButton.Icon>
@@ -57,7 +57,7 @@
             <RelativePanel.AlignLeftWithPanel>True</RelativePanel.AlignLeftWithPanel>
             <!--  secondary commands  -->
             <controls:PageHeader.SecondaryCommands>
-                <AppBarButton Command="{Binding GotoProfilPageCommand, Mode=TwoWay}" Label="Profil" />
+                <AppBarButton Command="{x:Bind ViewModel.GotoProfilPageCommand}" Label="Profil" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Voir les listes" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Temps forts" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Comptes" />
@@ -67,7 +67,7 @@
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
-<!--
+        <!--
         <StackPanel Grid.Row="1"  Orientation="Vertical" Height="auto">
             <StackPanel Orientation="Horizontal">
                 <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
@@ -99,6 +99,13 @@
             </StackPanel>
         </StackPanel>
 -->
+        
+        
+        
+        <!--     TODO : Améliorer le visuel, adapter la taille des items de la liste au tweet         -->
+
+
+
         <ScrollViewer Grid.Row="1">
             <ListView Name="TweetsListView" ItemsSource="{Binding TweetsCollection}">
                 <ListView.ItemsPanel>
@@ -107,33 +114,33 @@
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="interfaces:ITweet">
+                    <DataTemplate>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Image Source="{Binding CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                 <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{x:Bind CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
+                                        <TextBlock Text="{Binding CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
                                         <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
-                                        <TextBlock Margin="0, 2, 0, 0" Text="{x:Bind CreatedBy.UserIdentifier.ScreenName}" FontSize="13" />
+                                        <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.UserIdentifier.ScreenName}" FontSize="13" />
                                     </StackPanel>
-                                    <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Text}" TextWrapping="WrapWholeWords" />
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
+                            <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
                                 <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
                                     <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"></Image>
                                 </Button>
-                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25" Margin="10, 0, 10, 0">
+                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"></Image>
-                                        <TextBlock Text="{x:Bind RetweetCount}" />
+                                        <TextBlock Text="{Binding RetweetCount}" />
                                     </StackPanel>
                                 </Button>
                                 <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"></Image>
-                                        <TextBlock Text="{x:Bind FavoriteCount}" />
+                                        <TextBlock Text="{Binding FavoriteCount}" />
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -142,5 +149,10 @@
                 </ListView.ItemTemplate>
             </ListView>
         </ScrollViewer>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <Button Height="40" Content="Tweeter" Command="{x:Bind ViewModel.GotoTweetingPageCommand}"/>
+            <Button Height="40" Content="Tweet with Media" Margin="20, 0, 0, 0" />
+        </StackPanel>
     </Grid>
 </Page>
