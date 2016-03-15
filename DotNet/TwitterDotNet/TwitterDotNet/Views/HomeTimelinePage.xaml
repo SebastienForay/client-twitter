@@ -106,15 +106,15 @@
 
 
         <ScrollViewer Grid.Row="1">
-            <ListView Name="TweetsListView" ItemsSource="{Binding TweetsCollection}">
+            <ListView Name="TweetsListView" ItemsSource="{Binding TweetsCollection}" Margin="10, 0, 0, 0">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapGrid Orientation="Horizontal" Margin="0"/>
+                        <WrapGrid Orientation="Horizontal" Margin="0, 0, 10, 0" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" Height="300" Margin="0, 10, 0, 0" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                 <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
@@ -128,6 +128,24 @@
                                         </Button>
                                     </StackPanel>
                                     <TextBlock Text="{Binding Text}" TextWrapping="WrapWholeWords" />
+
+                                    <ScrollViewer MaxWidth="400" HorizontalAlignment="Left"
+                                            VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled"
+                                            HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled">
+                                        <ListView ItemsSource="{Binding Media}">
+                                            <ListView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapGrid Orientation="Horizontal" Margin="0, 0, 10, 0"/>
+                                                </ItemsPanelTemplate>
+                                            </ListView.ItemsPanel>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Image Source="{Binding MediaURLHttps}" MinWidth="200" MinHeight="200"/>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </ScrollViewer>
+
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
