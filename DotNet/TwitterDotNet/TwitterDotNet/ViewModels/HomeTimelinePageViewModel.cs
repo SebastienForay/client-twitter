@@ -37,6 +37,8 @@ namespace TwitterDotNet.ViewModels
 
             RetweetCommand = new RelayCommand<object>(param => Retweet((string)param));
             LikeCommand = new RelayCommand<object>(param => Like((string)param));
+            ReplyCommand = new RelayCommand<object>(param => Reply((string)param));
+            GotoUserProfilViaIdCommand = new RelayCommand<object>(param => NavigationService.Navigate(typeof(Views.UserProfilPage), param));
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -49,7 +51,7 @@ namespace TwitterDotNet.ViewModels
             await Task.CompletedTask;
         }
 
-        private void FirstTimelineLoading()
+        private async void FirstTimelineLoading()
         {
             HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 50;
             var newTweets = Tweetinvi.Timeline.GetHomeTimeline(HomeTlParameters);
@@ -58,9 +60,11 @@ namespace TwitterDotNet.ViewModels
                 var curTweet = tweet as Tweet;
                 TweetsCollection.Add(curTweet);
             }
+
+            await Task.CompletedTask;
         }
 
-        private void TimelineReloading()
+        private async void TimelineReloading()
         {
             HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 50;
             HomeTlParameters.SinceId = TweetsCollection.ElementAt(0).Id;
@@ -71,20 +75,27 @@ namespace TwitterDotNet.ViewModels
                 var curTweet = tweet as Tweet;
                 TweetsCollection.Insert(0, curTweet);
             }
+
+            await Task.CompletedTask;
         }
 
         private HomeTimelineParameters _homeTlParameters = new HomeTimelineParameters();
         public HomeTimelineParameters HomeTlParameters { get { return _homeTlParameters; } set { _homeTlParameters = value; } }
         
         private static ObservableCollection<Tweet> _tweetsCollection = new ObservableCollection<Tweet>();
-        public ObservableCollection<Tweet> TweetsCollection { get { return _tweetsCollection; } set { _tweetsCollection = value; RaisePropertyChanged(); } }
+        public static ObservableCollection<Tweet> TweetsCollection { get { return _tweetsCollection; } set { _tweetsCollection = value; } }
 
         // Tweets Commands
         private RelayCommand<object> _retweetCommand;
         public RelayCommand<object> RetweetCommand { get { return _retweetCommand; } set { _retweetCommand = value; } }
         private RelayCommand<object> _likeCommand;
         public RelayCommand<object> LikeCommand { get { return _likeCommand; } set { _likeCommand = value; } }
-     
+        private RelayCommand<object> _replyCommand;
+        public RelayCommand<object> ReplyCommand { get { return _replyCommand; } set { _replyCommand = value; } }
+        private RelayCommand<object> _gotoUserProfilViaIdCommand;
+        public RelayCommand<object> GotoUserProfilViaIdCommand { get { return _gotoUserProfilViaIdCommand; } set { _gotoUserProfilViaIdCommand = value; } }
+
+
         private void Retweet(object tweetIdStr)
         {
             var tweetId = Convert.ToInt64(tweetIdStr);
@@ -116,7 +127,11 @@ namespace TwitterDotNet.ViewModels
             TweetsCollection.Insert(TweetsCollection.IndexOf(tweetLocal), tweetAfterLike);
             TweetsCollection.Remove(tweetLocal);
         }
-
+        private void Reply(object tweetIdStr)
+        {
+            var tweetId = Convert.ToInt64(tweetIdStr);
+            NavigationService.Navigate(typeof(Views.TweetingPage), TweetsCollection.IndexOf(TweetsCollection.Single(i => i.Id == tweetId)));
+        }
 
         // TopBar Primary Commands
         private RelayCommand _gotoHomeTimelinePageCommand;

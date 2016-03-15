@@ -6,13 +6,16 @@ using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Command;
 using TwitterDotNet.Services.TweetinviAPI;
-using Tweetinvi;
 using Tweetinvi.Core.Credentials;
 using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using TwitterDotNet.Services.ImageLoader;
 using Windows.UI.Xaml.Media;
+using Tweetinvi.Core.Interfaces;
+using Tweetinvi.Core.Parameters;
+using System.Collections.ObjectModel;
+using Tweetinvi.Logic;
 
 namespace TwitterDotNet.ViewModels
 {
@@ -23,47 +26,161 @@ namespace TwitterDotNet.ViewModels
         public UserProfilPageViewModel()
         {
             _imageLoader = new ImageLoader();
+
+            GotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
+            GotoNotificationsCommand = new RelayCommand(GotoNotifications);
+            GotoMessagesCommand = new RelayCommand(GotoMessages);
+            GotoFindPeopleCommand = new RelayCommand(GotoFindPeople);
+            GotoSearchCommand = new RelayCommand(GotoSearch);
+
+            GotoProfilPageCommand = new RelayCommand(GotoProfilPage);
+
+            RetweetCommand = new RelayCommand<object>(param => Retweet((string)param));
+            LikeCommand = new RelayCommand<object>(param => Like((string)param));
+            ReplyCommand = new RelayCommand<object>(param => Reply((string)param));
+            GotoUserProfilViaIdCommand = new RelayCommand<object>(param => NavigationService.Navigate(typeof(Views.UserProfilPage), param));
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
-            var loggedUser = User.GetAuthenticatedUser();
+            if (parameter != null)
+                UserToLoad = Tweetinvi.User.GetUserFromId(Convert.ToInt64(parameter));
+            else
+                UserToLoad = Tweetinvi.User.GetAuthenticatedUser();
 
-            if (!String.IsNullOrEmpty(loggedUser.ProfileImageUrl))
+            if (UserToLoad != null)
             {
-                ProfilPicture = await _imageLoader.GetFromUrl(loggedUser.ProfileImageUrlFullSize);
-                BannerPicture = await _imageLoader.GetFromUrl(loggedUser.ProfileBannerURL);
+                if (!String.IsNullOrEmpty(UserToLoad.ProfileImageUrlFullSize))
+                    ProfilPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileImageUrlFullSize);
+                if (!String.IsNullOrEmpty(UserToLoad.ProfileBannerURL))
+                    BannerPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileBannerURL);
+
+                if (UserToLoad.Verified)
+                    VerifiedIconVisibility = Visibility.Visible;
             }
+
+            if (Tweets.Count == 0)
+                FirstTimelineLoading();
+            else
+                TimelineReloading();
         }
 
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
+        private async void FirstTimelineLoading()
         {
+            var newTweets = Tweetinvi.Timeline.GetUserTimeline(UserToLoad.Id);
+            foreach (var tweet in newTweets)
+            {
+                var curTweet = tweet as Tweet;
+                Tweets.Add(curTweet);
+            }
+
             await Task.CompletedTask;
         }
 
-        public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
+        private async void TimelineReloading()
         {
-            args.Cancel = false;
+            var newTweets = Tweetinvi.Timeline.GetUserTimeline(UserToLoad.Id);
+            foreach (var tweet in newTweets)
+            {
+                var curTweet = tweet as Tweet;
+                Tweets.Insert(0, curTweet);
+            }
+
             await Task.CompletedTask;
         }
 
-        public void GotoSettings() => NavigationService.Navigate(typeof(Views.SettingsPage), 0);
-        public void GotoPrivacy() => NavigationService.Navigate(typeof(Views.SettingsPage), 1);
-        public void GotoAbout() => NavigationService.Navigate(typeof(Views.SettingsPage), 2);
+        private ObservableCollection<Tweet> _Tweets = new ObservableCollection<Tweet>();
+        public ObservableCollection<Tweet> Tweets { get { return _Tweets; } set { _Tweets = value; } }
+
+        private IUser _userToLoad;
+        public IUser UserToLoad { get { return _userToLoad; } set { _userToLoad = value; RaisePropertyChanged(); } }
 
         private ImageSource _profilPicture;
         private ImageSource _bannerPicture;
+        public ImageSource ProfilPicture { get { return _profilPicture; } set { _profilPicture = value; RaisePropertyChanged(); } }
+        public ImageSource BannerPicture { get { return _bannerPicture; } set { _bannerPicture = value; RaisePropertyChanged(); } }
 
-        public ImageSource ProfilPicture
+        private Visibility _verifiedIconVisibility = Visibility.Collapsed;
+        public Visibility VerifiedIconVisibility { get { return _verifiedIconVisibility; } set { _verifiedIconVisibility = value; RaisePropertyChanged(); } }
+
+        // Tweets Commands
+        private RelayCommand<object> _retweetCommand;
+        public RelayCommand<object> RetweetCommand { get { return _retweetCommand; } set { _retweetCommand = value; } }
+        private RelayCommand<object> _likeCommand;
+        public RelayCommand<object> LikeCommand { get { return _likeCommand; } set { _likeCommand = value; } }
+        private RelayCommand<object> _replyCommand;
+        public RelayCommand<object> ReplyCommand { get { return _replyCommand; } set { _replyCommand = value; } }
+        private RelayCommand<object> _gotoUserProfilViaIdCommand;
+        public RelayCommand<object> GotoUserProfilViaIdCommand { get { return _gotoUserProfilViaIdCommand; } set { _gotoUserProfilViaIdCommand = value; } }
+        
+        private void Retweet(object tweetIdStr)
         {
-            get { return _profilPicture; }
-            set { _profilPicture = value; RaisePropertyChanged(); }
+            var tweetId = Convert.ToInt64(tweetIdStr);
+
+            var tweetLocal = Tweets.Single(i => i.Id == tweetId);
+            var tweetBeforRT = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            if (tweetBeforRT.Retweeted) Tweetinvi.Tweet.UnRetweet(tweetId);
+            else Tweetinvi.Tweet.PublishRetweet((long)tweetId);
+
+            var tweetAfterRT = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            Tweets.Insert(Tweets.IndexOf(tweetLocal), tweetAfterRT);
+            Tweets.Remove(tweetLocal);
         }
-        public ImageSource BannerPicture
+        private void Like(object tweetIdStr)
         {
-            get { return _bannerPicture; }
-            set { _bannerPicture = value; RaisePropertyChanged(); }
+            var tweetId = Convert.ToInt64(tweetIdStr);
+
+            var tweetLocal = Tweets.Single(i => i.Id == tweetId);
+
+            var tweetBeforLike = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            if (tweetBeforLike.Favorited) Tweetinvi.Tweet.UnFavoriteTweet(tweetId);
+            else Tweetinvi.Tweet.FavoriteTweet((long)tweetId);
+
+            var tweetAfterLike = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
+
+            Tweets.Insert(Tweets.IndexOf(tweetLocal), tweetAfterLike);
+            Tweets.Remove(tweetLocal);
+        }
+        private void Reply(object tweetIdStr)
+        {
+            var tweetId = Convert.ToInt64(tweetIdStr);
+            NavigationService.Navigate(typeof(Views.TweetingPage), Tweets.IndexOf(Tweets.Single(i => i.Id == tweetId)));
         }
 
+        // TopBar Primary Commands
+        private RelayCommand _gotoHomeTimelinePageCommand;
+        private RelayCommand _gotoNotificationsCommand;
+        private RelayCommand _gotoMessagesCommand;
+        private RelayCommand _gotoFindPeopleCommand;
+        private RelayCommand _gotoSearchCommand;
+
+        public RelayCommand GotoHomeTimelinePageCommand { get { return _gotoHomeTimelinePageCommand; } set { _gotoHomeTimelinePageCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoNotificationsCommand { get { return _gotoNotificationsCommand; } set { _gotoNotificationsCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoMessagesCommand { get { return _gotoMessagesCommand; } set { _gotoMessagesCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoFindPeopleCommand { get { return _gotoFindPeopleCommand; } set { _gotoFindPeopleCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoSearchCommand { get { return _gotoSearchCommand; } set { _gotoSearchCommand = value; RaisePropertyChanged(); } }
+
+        // TopBar Secondary Commands
+        private RelayCommand _gotoProfilPageCommand;
+        public RelayCommand GotoProfilPageCommand { get { return _gotoProfilPageCommand; } set { _gotoProfilPageCommand = value; RaisePropertyChanged(); } }
+
+
+        // Commands Functions
+            // Primary
+        private void GotoHomeTimeline() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoNotifications() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoMessages() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoFindPeople() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoSearch() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+
+
+            // Secondary
+        private void GotoProfilPage() => NavigationService.Navigate(typeof(Views.UserProfilPage));
+        public void GotoSettings() => NavigationService.Navigate(typeof(Views.SettingsPage), 0);
+        public void GotoPrivacy() => NavigationService.Navigate(typeof(Views.SettingsPage), 1);
+        public void GotoAbout() => NavigationService.Navigate(typeof(Views.SettingsPage), 2);
     }
 }

@@ -75,22 +75,22 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{x:Bind CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
                         <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
-                        <TextBlock Margin="0, 2, 0, 0" Text="{x:Bind CreatedBy.UserIdentifier.ScreenName}" FontSize="13" />
+                        <TextBlock Margin="0, 2, 0, 0" Text="{x:Bind CreatedBy.UserIdentifier.ScreenName}" FontSize="13"  />
                     </StackPanel>
                     <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
-                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                <Button Padding="-2, -3, 0, 0" Width="80" Height="25">
                     <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"></Image>
                 </Button>
-                <Button Padding="-2, -3, 0, 0" Width="75" Height="25" Margin="10, 0, 10, 0">
+                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"></Image>
                         <TextBlock Text="{x:Bind RetweetCount}" />
                     </StackPanel>
                 </Button>
-                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"></Image>
                         <TextBlock Text="{x:Bind Favoritecount}" />
@@ -98,11 +98,10 @@
                 </Button>
             </StackPanel>
         </StackPanel>
--->
-        
-        
-        
-        <!--     TODO : Améliorer le visuel, adapter la taille des items de la liste au tweet         -->
+
+
+
+          TODO : Améliorer le visuel, adapter la taille des items de la liste au tweet         -->
 
 
 
@@ -120,30 +119,34 @@
                                 <Image Source="{Binding CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                 <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
-                                        <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
-                                        <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.UserIdentifier.ScreenName}" FontSize="13" />
+                                        <Button Background="Transparent" Padding="0, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.GotoUserProfilViaIdCommand}" CommandParameter="{Binding CreatedBy.UserIdentifier.IdStr}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
+                                                <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
+                                                <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.UserIdentifier.ScreenName}" FontSize="13"  />
+                                            </StackPanel>
+                                        </Button>
                                     </StackPanel>
                                     <TextBlock Text="{Binding Text}" TextWrapping="WrapWholeWords" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
-                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Command="{Binding ElementName=TweetsListView, Path=DataContext.ReplyCommand}" CommandParameter="{Binding IdStr}">
                                     <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"></Image>
                                 </Button>
-                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
+                                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"></Image>
                                         <TextBlock Text="{Binding RetweetCount}" />
                                     </StackPanel>
                                 </Button>
-                                <Button Padding="-2, -3, 0, 0" Width="75" Height="25">
+                                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.LikeCommand}" CommandParameter="{Binding IdStr}">
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"></Image>
                                         <TextBlock Text="{Binding FavoriteCount}" />
                                     </StackPanel>
                                 </Button>
-                            </StackPanel>
+                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
