@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Button Content="X" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, 10, 0, 10" Command="{x:Bind ViewModel.GotoHomeTimelinePageCommand}"/>
+        <Button Content="X" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, 10, 0, 10" Command="{x:Bind ViewModel.GotoPreviousPageCommand}"/>
         <TextBox Grid.Row="1" Margin="10, 0, 10, 20" Width="auto"  Header="Quoi de neuf ?" MaxLength="140" Text="{x:Bind ViewModel.TweetText, Mode=TwoWay}" />
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0, 0, 10, 10">
             <TextBlock Text="{Binding TweetTextLengthRemaining, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="Wrap" />

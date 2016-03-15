@@ -12,7 +12,7 @@ namespace TwitterDotNet.ViewModels
         public TweetingPageViewModel()
         {
             TweetCommand = new RelayCommand(PublishTweet);
-            GotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
+            GotoPreviousPageCommand = new RelayCommand(GotoPreviousPage);
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -52,9 +52,9 @@ namespace TwitterDotNet.ViewModels
         private RelayCommand _tweetCommand;
         public RelayCommand TweetCommand { get { return _tweetCommand; } set { _tweetCommand = value; } }
         
-        private RelayCommand _gotoHomeTimelinePageCommand;
-        public RelayCommand GotoHomeTimelinePageCommand { get { return _gotoHomeTimelinePageCommand; } set { _gotoHomeTimelinePageCommand = value; RaisePropertyChanged(); } }
-        private void GotoHomeTimeline() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private RelayCommand _gotoPreviousPageCommand;
+        public RelayCommand GotoPreviousPageCommand { get { return _gotoPreviousPageCommand; } set { _gotoPreviousPageCommand = value; RaisePropertyChanged(); } }
+        private void GotoPreviousPage() => NavigationService.GoBack();
 
         private void PublishTweet()
         {
