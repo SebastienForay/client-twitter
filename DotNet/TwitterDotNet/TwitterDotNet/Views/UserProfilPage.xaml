@@ -23,30 +23,38 @@
         </Grid.RowDefinitions>
         
         <controls:PageHeader x:Name="pageHeader">
+            <controls:PageHeader.Content>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Profil de :"/>
+                    <TextBlock Text="{Binding ElementName=ProfilName, Path=Text}" Margin="5, 0, 5, 0"/>
+                    <TextBlock Text="- @"/>
+                    <TextBlock Text="{Binding ElementName=ProfilScreenName, Path=Text}"/>
+                </StackPanel>
+            </controls:PageHeader.Content>
             <controls:PageHeader.PrimaryCommands>
                 <AppBarButton Label="Home" Command="{x:Bind ViewModel.GotoHomeTimelinePageCommand}">
                     <AppBarButton.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.social.twitter.png" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/twitter/twitter.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton Label="Notifications" Command="{x:Bind ViewModel.GotoNotificationsCommand}">
                     <AppBarButton.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.camera.png" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/divers/notifications.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton Label="Messages" Command="{x:Bind ViewModel.GotoMessagesCommand}">
                     <AppBarButton.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.image.gallery.png" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/media/gallery.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton Label="Trouver des personnes" Command="{x:Bind ViewModel.GotoFindPeopleCommand}">
                     <AppBarButton.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.user.add.png" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/twitter/users/follow.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton Label="Rechercher" Command="{x:Bind ViewModel.GotoSearchCommand}">
                     <AppBarButton.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.page.search.png" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/divers/search.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
             </controls:PageHeader.PrimaryCommands>
@@ -67,7 +75,7 @@
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Image Source="{Binding BannerPicture}" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0, 48, 0, 0" />
@@ -77,32 +85,32 @@
                             <Image Source="{Binding ProfilPicture}" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, -30, 0, 0" />
 
                             <Button Margin="25, 0, 0, 0" Padding="-2, -3, 0, 0" Width="30" Height="30">
-                                <Image Source="ms-appx:///Assets/icons/appbar.star.png"/>
+                                <Image Source="ms-appx:///Assets/icons/twitter/users/star.png"/>
                             </Button>
 
                             <Button Padding="-2, -3, 0, 0" Width="30" Height="30" Margin="10, 0, 0, 0">
-                                <Image Source="ms-appx:///Assets/icons/appbar.user.add.png"/>
+                                <Image Source="ms-appx:///Assets/icons/twitter/users/follow.png"/>
                             </Button>
                         </StackPanel>
 
                         <StackPanel Orientation="Vertical" Margin="10, 0, 0, 0">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding UserToLoad.Name}" FontWeight="Bold" FontSize="16" />
-                                <Image Source="ms-appx:///Assets/icons/icon.verified.png" Visibility="{Binding VerifiedIconVisibility}" Margin="10, 0, 0, 0"/>
+                                <TextBlock x:Name="ProfilName"  Text="{Binding UserToLoad.Name}" FontWeight="Bold" FontSize="16" />
+                                <Image Source="ms-appx:///Assets/icons/twitter/users/verified.png" Visibility="{Binding VerifiedIconVisibility}" Margin="10, 0, 0, 0"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="@" FontSize="13" />
-                                <TextBlock Text="{Binding UserToLoad.ScreenName}" FontSize="13" />
+                                <TextBlock x:Name="ProfilScreenName"  Text="{Binding UserToLoad.ScreenName}" FontSize="13" />
                             </StackPanel>
                         </StackPanel>
 
                         <TextBlock Text="{Binding UserToLoad.Description}" Margin="10, 10, 0, 0" TextWrapping="Wrap" />
 
                         <StackPanel Orientation="Horizontal" Margin="10, 10, 0, 0">
-                            <Image Source="ms-appx:///Assets/icons/appbar.location.round.png" Width="25" Margin="10, 0, 0, 0"/>
+                            <Image Source="ms-appx:///Assets/icons/twitter/users/location.png" Width="25" Margin="10, 0, 0, 0"/>
                             <TextBlock Text="{Binding UserToLoad.Location}" />
-                            <Image Source="ms-appx:///Assets/icons/appbar.link.png" Width="25" Margin="10, 0, 0, 0"/>
+                            <Image Source="ms-appx:///Assets/icons/twitter/users/link.png" Width="25" Margin="10, 0, 0, 0"/>
                             <TextBlock Text="{Binding UserToLoad.Url}" />
                         </StackPanel>
 
@@ -114,16 +122,26 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
-                
+
                 <ListView Name="TweetsListView" ItemsSource="{Binding Tweets}">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapGrid Orientation="Horizontal" Margin="0"/>
+                            <WrapGrid>
+                                <WrapGrid.Orientation>Vertical</WrapGrid.Orientation>
+                                <WrapGrid.Margin>0, 0, 10, 0</WrapGrid.Margin>
+                                <WrapGrid.HorizontalAlignment>Center</WrapGrid.HorizontalAlignment>
+                            </WrapGrid>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Margin" Value="25, 0, 25, 10"/>
+                            <Setter Property="Background" Value="AntiqueWhite"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Vertical" Margin="0, 10, 0, 0">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                     <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
@@ -135,8 +153,10 @@
                                                     <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.UserIdentifier.ScreenName}" FontSize="13"  />
                                                 </StackPanel>
                                             </Button>
+
+                                            <TextBlock HorizontalAlignment="Right" Text="{Binding CreatedAt}" FontSize="13"/>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding Text}" TextWrapping="WrapWholeWords" />
 
                                         <ScrollViewer MaxWidth="400" HorizontalAlignment="Left"
                                             VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled"
@@ -159,17 +179,17 @@
                                 </StackPanel>
                                 <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
                                     <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Command="{Binding ElementName=TweetsListView, Path=DataContext.ReplyCommand}" CommandParameter="{Binding IdStr}">
-                                        <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"/>
+                                        <Image Source="ms-appx:///Assets/icons/twitter/tweets/reply.png" Width="25" Height="25"/>
                                     </Button>
                                     <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"/>
+                                            <Image Source="ms-appx:///Assets/icons/twitter/tweets/retweet.png" Width="25" Height="25"/>
                                             <TextBlock Text="{Binding RetweetCount}" />
                                         </StackPanel>
                                     </Button>
                                     <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.LikeCommand}" CommandParameter="{Binding IdStr}">
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"/>
+                                            <Image Source="ms-appx:///Assets/icons/twitter/tweets/heart.png" Width="25" Height="25"/>
                                             <TextBlock Text="{Binding FavoriteCount}" />
                                         </StackPanel>
                                     </Button>
