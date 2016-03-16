@@ -90,7 +90,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="Assets\home.json" />
     <None Include="TwitterDotNet_TemporaryKey.pfx" />
     <None Include="project.json" />
   </ItemGroup>
@@ -152,20 +151,21 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\icons\appbar.camera.png" />
-    <Content Include="Assets\icons\appbar.heart.png" />
-    <Content Include="Assets\icons\appbar.image.gallery.png" />
-    <Content Include="Assets\icons\appbar.link.png" />
-    <Content Include="Assets\icons\appbar.location.round.png" />
-    <Content Include="Assets\icons\appbar.message.png" />
-    <Content Include="Assets\icons\appbar.page.search.png" />
-    <Content Include="Assets\icons\appbar.social.twitter.hashtag.png" />
-    <Content Include="Assets\icons\appbar.social.twitter.png" />
-    <Content Include="Assets\icons\appbar.social.twitter.retweet.png" />
-    <Content Include="Assets\icons\appbar.star.png" />
-    <Content Include="Assets\icons\appbar.undo.point.png" />
-    <Content Include="Assets\icons\appbar.user.add.png" />
-    <Content Include="Assets\icons\icon.verified.png" />
+    <Content Include="Assets\icons\divers\notifications.png" />
+    <Content Include="Assets\icons\media\camera.png" />
+    <Content Include="Assets\icons\twitter\tweets\heart.png" />
+    <Content Include="Assets\icons\media\gallery.png" />
+    <Content Include="Assets\icons\twitter\users\link.png" />
+    <Content Include="Assets\icons\twitter\users\location.png" />
+    <Content Include="Assets\icons\divers\message.png" />
+    <Content Include="Assets\icons\divers\search.png" />
+    <Content Include="Assets\icons\twitter\hashtag.png" />
+    <Content Include="Assets\icons\twitter\twitter.png" />
+    <Content Include="Assets\icons\twitter\tweets\retweet.png" />
+    <Content Include="Assets\icons\twitter\users\star.png" />
+    <Content Include="Assets\icons\twitter\tweets\reply.png" />
+    <Content Include="Assets\icons\twitter\users\follow.png" />
+    <Content Include="Assets\icons\twitter\users\verified.png" />
     <Content Include="Help.htm" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
