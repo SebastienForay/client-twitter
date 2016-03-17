@@ -51,7 +51,7 @@ namespace TwitterDotNet.ViewModels
             if (UserToLoad != null)
             {
                 if (!String.IsNullOrEmpty(UserToLoad.ProfileImageUrlFullSize))
-                    ProfilPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileImageUrlFullSize);
+                    ProfilPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileImageUrl400x400);
                 if (!String.IsNullOrEmpty(UserToLoad.ProfileBannerURL))
                     BannerPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileBannerURL);
 

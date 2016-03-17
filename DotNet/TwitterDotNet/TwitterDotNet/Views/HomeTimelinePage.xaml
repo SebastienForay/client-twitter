@@ -16,7 +16,7 @@
         <vm:HomeTimelinePageViewModel x:Name="ViewModel" />
     </Page.DataContext>
 
-    <Grid x:Name="PageGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="PageGrid" Background="#F5F8FA">
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
@@ -67,116 +67,103 @@
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
-        <!--
-        <StackPanel Grid.Row="1"  Orientation="Vertical" Height="auto">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="{x:Bind CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{x:Bind CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
-                        <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
-                        <TextBlock Margin="0, 2, 0, 0" Text="{x:Bind CreatedBy.UserIdentifier.ScreenName}" FontSize="13"  />
-                    </StackPanel>
-                    <TextBlock Text="{x:Bind Text}" TextWrapping="Wrap" />
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
-                <Button Padding="-2, -3, 0, 0" Width="80" Height="25">
-                    <Image Source="ms-appx:///Assets/icons/appbar.undo.point.png" Width="25" Height="25"></Image>
-                </Button>
-                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="ms-appx:///Assets/icons/appbar.social.twitter.retweet.png" Width="25" Height="25"></Image>
-                        <TextBlock Text="{x:Bind RetweetCount}" />
-                    </StackPanel>
-                </Button>
-                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="ms-appx:///Assets/icons/appbar.heart.png" Width="25" Height="25"></Image>
-                        <TextBlock Text="{x:Bind Favoritecount}" />
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-        </StackPanel>
 
-
-
-          TODO : Améliorer le visuel, adapter la taille des items de la liste au tweet         -->
-
-
-
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center">
             <ListView Name="TweetsListView" ItemsSource="{Binding TweetsCollection}">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapGrid>
-                            <WrapGrid.Orientation>Vertical</WrapGrid.Orientation>
-                            <WrapGrid.Margin>0, 0, 10, 0</WrapGrid.Margin>
-                        </WrapGrid>
+                        <WrapGrid Orientation="Horizontal" MaximumRowsOrColumns="1" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="Margin" Value="25, 0, 25, 10"/>
-                        <Setter Property="Background" Value="AntiqueWhite"/>
+                        <Setter Property="Padding" Value="10"/>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="BorderBrush" Value="#E1E8ED"/>
+                        <Setter Property="BorderThickness" Value="1"/>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical" Margin="0, 10, 0, 0">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{Binding CreatedBy.ProfileImageUrl}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                <StackPanel Margin="10, 0, 0, 0" Orientation="Vertical">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Background="Transparent" Padding="0, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.GotoUserProfilViaIdCommand}" CommandParameter="{Binding CreatedBy.UserIdentifier.IdStr}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
-                                                <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
-                                                <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.UserIdentifier.ScreenName}" FontSize="13"  />
-                                            </StackPanel>
-                                        </Button>
+                        <!-- Tweet Grid -->
+                        <Grid x:Name="TweetGrid" Height="Auto" Width="Auto">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" /> <!-- Profil Picture -->
+                                <ColumnDefinition Width="Auto" /><!-- Tweet Content -->
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding CreatedBy.ProfileImageUrl400x400}" Width="70" Height="70" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <!-- Tweet Content Grid -->
+                            <Grid Grid.Column="1" Margin="10, 0, 0, 0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" /><!-- User Name + Tweet Date -->
+                                    <RowDefinition Height="Auto" /><!-- Tweet Text -->
+                                    <RowDefinition Height="Auto" /><!-- Tweet Medias -->
+                                    <RowDefinition Height="Auto" /><!-- Tweet Buttons (like, RT, reply) -->
+                                </Grid.RowDefinitions>
+                                
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/><!-- User Name -->
+                                        <ColumnDefinition Width="*"/><!-- Tweet Date -->
+                                    </Grid.ColumnDefinitions>
+                                    <Button Background="Transparent" Padding="0, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.GotoUserProfilViaIdCommand}" CommandParameter="{Binding CreatedBy.UserIdentifier.IdStr}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
+                                            <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
+                                            <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.ScreenName}" FontSize="13"  />
+                                        </StackPanel>
+                                    </Button>
+                                    <!-- Tweet Date -->
+                                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding CreatedAt}" FontSize="13"/>
+                                </Grid>
+                                
+                                <!-- Tweet Text -->
+                                <TextBlock Grid.Row="1" Text="{Binding Text}" TextWrapping="WrapWholeWords" />
 
-                                        <TextBlock HorizontalAlignment="Right" Text="{Binding CreatedAt}" FontSize="13"/>
-                                    </StackPanel>
-                                    <TextBlock Text="{Binding Text}" TextWrapping="WrapWholeWords" />
-
-                                    <ScrollViewer MaxWidth="400" HorizontalAlignment="Left"
+                                <!-- Tweet Medias -->
+                                <ScrollViewer Grid.Row="2" Width="{Binding ElementName=TweetGrid, Path=Width}" HorizontalAlignment="Left"
                                             VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled"
                                             HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled">
-                                        <ListView ItemsSource="{Binding Media}">
-                                            <ListView.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <WrapGrid Orientation="Horizontal" Margin="0, 0, 10, 0"/>
-                                                </ItemsPanelTemplate>
-                                            </ListView.ItemsPanel>
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Image Source="{Binding MediaURLHttps}" MinWidth="200" MinHeight="200"/>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                        </ListView>
-                                    </ScrollViewer>
+                                    <GridView ItemsSource="{Binding Media}">
+                                        <GridView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapGrid Orientation="Horizontal" Margin="0, 0, 10, 0"/>
+                                            </ItemsPanelTemplate>
+                                        </GridView.ItemsPanel>
+                                        <GridView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Image Source="{Binding MediaURL}"/>
+                                            </DataTemplate>
+                                        </GridView.ItemTemplate>
+                                    </GridView>
+                                </ScrollViewer>
+                                
+                                <!-- Tweet Buttons -->
+                                <Grid Grid.Row="3" Margin="0, 20, 0, 0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/><!-- Reply button -->
+                                        <ColumnDefinition Width="Auto"/><!-- RT Button -->
+                                        <ColumnDefinition Width="Auto"/><!-- Like Button -->
+                                    </Grid.ColumnDefinitions>
 
-                                </StackPanel>
-                            </StackPanel>
-                            <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Left" Margin="50, 0, 0, 0">
-                                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Command="{Binding ElementName=TweetsListView, Path=DataContext.ReplyCommand}" CommandParameter="{Binding IdStr}">
-                                    <Image Source="ms-appx:///Assets/icons/twitter/tweets/reply.png" Width="25" Height="25"/>
-                                </Button>
-                                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="ms-appx:///Assets/icons/twitter/tweets/retweet.png" Width="25" Height="25"/>
-                                        <TextBlock Text="{Binding RetweetCount}" />
-                                    </StackPanel>
-                                </Button>
-                                <Button Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.LikeCommand}" CommandParameter="{Binding IdStr}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="ms-appx:///Assets/icons/twitter/tweets/heart.png" Width="25" Height="25"/>
-                                        <TextBlock Text="{Binding FavoriteCount}" />
-                                    </StackPanel>
-                                </Button>
-                             </StackPanel>
-                        </StackPanel>
+                                    <Button Grid.Column="0" Background="Transparent" Padding="-2, -3, 0, 0" Width="80" Height="25" Command="{Binding ElementName=TweetsListView, Path=DataContext.ReplyCommand}" CommandParameter="{Binding IdStr}">
+                                        <Image Source="ms-appx:///Assets/icons/twitter/tweets/reply.png" Width="25" Height="25"/>
+                                    </Button>
+                                    <Button Grid.Column="1" Background="Transparent" Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="ms-appx:///Assets/icons/twitter/tweets/retweet.png" Width="25" Height="25"/>
+                                            <TextBlock Text="{Binding RetweetCount}" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Grid.Column="2" Background="Transparent" Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.LikeCommand}" CommandParameter="{Binding IdStr}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="ms-appx:///Assets/icons/twitter/tweets/heart.png" Width="25" Height="25"/>
+                                            <TextBlock Text="{Binding FavoriteCount}" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
