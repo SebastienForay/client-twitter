@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Command;
-using TwitterDotNet.Services.TweetinviAPI;
-using Tweetinvi.Core.Credentials;
 using System;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using TwitterDotNet.Services.ImageLoader;
-using Windows.UI.Xaml.Media;
 using Tweetinvi.Core.Interfaces;
 using Tweetinvi.Core.Parameters;
 using System.Collections.ObjectModel;

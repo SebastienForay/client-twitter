@@ -2,23 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Command;
-using TwitterDotNet.Services.TweetinviAPI;
-using Tweetinvi.Core.Credentials;
 using System;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using TwitterDotNet.Services.AccountManager;
 using Tweetinvi.Core.Parameters;
-using Tweetinvi.Core.Interfaces;
 using Tweetinvi.Logic;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Windows.UI;
-using Windows.UI.Xaml.Media;
-using System.Diagnostics;
 
 namespace TwitterDotNet.ViewModels
 {

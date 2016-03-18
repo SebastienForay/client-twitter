@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tweetinvi;
-
-namespace TwitterDotNet.Services.TweetinviAPI
+﻿namespace TwitterDotNet.Services.TweetinviAPI
 {
     public class TweetinviData
     {
