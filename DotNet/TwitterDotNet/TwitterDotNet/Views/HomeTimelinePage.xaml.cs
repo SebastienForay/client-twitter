@@ -26,5 +26,18 @@ namespace TwitterDotNet.Views
         {
             this.InitializeComponent();
         }
+
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            var verticalOffsetValue = TweetsScrollViewer.VerticalOffset;
+            var maxVerticalOffsetValue = TweetsScrollViewer.ExtentHeight - TweetsScrollViewer.ViewportHeight;
+
+            // Dernier item de la liste atteint
+            if (maxVerticalOffsetValue < 0 || verticalOffsetValue == maxVerticalOffsetValue)
+            {
+                ViewModel.LoadMoreTweets();
+            }
+
+        }
     }
 }

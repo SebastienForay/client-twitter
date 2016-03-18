@@ -7,9 +7,9 @@
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:Template10.Controls"
+    xmlns:vm="using:TwitterDotNet.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:TwitterDotNet.ViewModels"
     mc:Ignorable="d">
 
     <Page.DataContext>
@@ -68,8 +68,8 @@
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center">
-            <ListView Name="TweetsListView" ItemsSource="{Binding TweetsCollection}">
+        <ScrollViewer x:Name="TweetsScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center" ViewChanged="ScrollViewer_ViewChanged" >
+            <ListView Name="TweetsListView" ItemsSource="{Binding Tweets}" >
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapGrid Orientation="Horizontal" MaximumRowsOrColumns="1" />
@@ -86,7 +86,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <!-- Tweet Grid -->
-                        <Grid x:Name="TweetGrid" Height="Auto" Width="Auto">
+                        <Grid x:Name="TweetGrid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" /> <!-- Profil Picture -->
                                 <ColumnDefinition Width="Auto" /><!-- Tweet Content -->
