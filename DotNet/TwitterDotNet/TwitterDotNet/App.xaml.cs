@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using TwitterDotNet.Services.SettingsServices;
 using Windows.ApplicationModel.Activation;
 using Template10.Controls;
-using Template10.Common;
 
 namespace TwitterDotNet
 {
