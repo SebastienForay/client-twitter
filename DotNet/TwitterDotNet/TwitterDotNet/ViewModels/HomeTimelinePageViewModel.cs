@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
+using System.Diagnostics;
 
 namespace TwitterDotNet.ViewModels
 {
@@ -25,6 +26,8 @@ namespace TwitterDotNet.ViewModels
     {
         public HomeTimelinePageViewModel()
         {
+            Views.Busy.SetBusy(true, "Chargement de la timeline, veuillez patienter ...");
+
             GotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
             GotoNotificationsCommand = new RelayCommand(GotoNotifications);
             GotoMessagesCommand = new RelayCommand(GotoMessages);
@@ -43,47 +46,82 @@ namespace TwitterDotNet.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (TweetsCollection.Count == 0)
+            if (Tweets.Count == 0)
                 FirstTimelineLoading();
             else
                 TimelineReloading();
-
+            
             await Task.CompletedTask;
+
+            Views.Busy.SetBusy(false);
         }
 
         private async void FirstTimelineLoading()
         {
             HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 50;
             var newTweets = Tweetinvi.Timeline.GetHomeTimeline(HomeTlParameters);
-            foreach (var tweet in newTweets)
-            {
-                var curTweet = tweet as Tweet;
-                TweetsCollection.Add(curTweet);
-            }
 
-            await Task.CompletedTask;
+            if (newTweets != null)
+            {
+                foreach (var tweet in newTweets)
+                {
+                    var curTweet = tweet as Tweet;
+                    Tweets.Add(curTweet);
+                }
+
+                await Task.CompletedTask;
+            }
+            else
+                FirstTimelineLoading();
         }
 
         private async void TimelineReloading()
         {
             HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 50;
-            HomeTlParameters.SinceId = TweetsCollection.ElementAt(0).Id;
+            HomeTlParameters.SinceId = Tweets.ElementAt(0).Id;
 
             var newTweets = Tweetinvi.Timeline.GetHomeTimeline(HomeTlParameters);
-            foreach (var tweet in newTweets)
+            if (newTweets != null)
             {
-                var curTweet = tweet as Tweet;
-                TweetsCollection.Insert(0, curTweet);
-            }
+                foreach (var tweet in newTweets)
+                {
+                    var curTweet = tweet as Tweet;
+                    Tweets.Insert(0, curTweet);
+                }
 
-            await Task.CompletedTask;
+                await Task.CompletedTask;
+            }
+            else
+                TimelineReloading();
+        }
+
+        public async void LoadMoreTweets()
+        {
+            HomeTlParameters.MaximumNumberOfTweetsToRetrieve = 20;
+            HomeTlParameters.MaxId = Tweets.ElementAt(Tweets.IndexOf(Tweets.Last())).Id;
+
+            var newTweets = Tweetinvi.Timeline.GetHomeTimeline(HomeTlParameters);
+            if (newTweets != null)
+            {
+                foreach (var tweet in newTweets)
+                {
+                    var curTweet = tweet as Tweet;
+
+                    if (curTweet.Id != Tweets.Last().Id)
+                        Tweets.Insert(Tweets.IndexOf(Tweets.Last()) + 1, curTweet);
+                }
+
+                await Task.CompletedTask;
+            }
+            else
+                LoadMoreTweets();
         }
 
         private HomeTimelineParameters _homeTlParameters = new HomeTimelineParameters();
         public HomeTimelineParameters HomeTlParameters { get { return _homeTlParameters; } set { _homeTlParameters = value; } }
         
-        private static ObservableCollection<Tweet> _tweetsCollection = new ObservableCollection<Tweet>();
-        public static ObservableCollection<Tweet> TweetsCollection { get { return _tweetsCollection; } set { _tweetsCollection = value; } }
+        private static ObservableCollection<Tweet> _tweets = new ObservableCollection<Tweet>();
+        public static ObservableCollection<Tweet> Tweets { get { return _tweets; } set { _tweets = value; } }
 
         // Tweets Commands
         private RelayCommand<object> _retweetCommand;
@@ -100,7 +138,7 @@ namespace TwitterDotNet.ViewModels
         {
             var tweetId = Convert.ToInt64(tweetIdStr);
 
-            var tweetLocal = TweetsCollection.Single(i => i.Id == tweetId);
+            var tweetLocal = Tweets.Single(i => i.Id == tweetId);
             var tweetBeforRT = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
             
             if (tweetBeforRT.Retweeted) Tweetinvi.Tweet.UnRetweet(tweetId);
@@ -108,14 +146,14 @@ namespace TwitterDotNet.ViewModels
 
             var tweetAfterRT = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
 
-            TweetsCollection.Insert(TweetsCollection.IndexOf(tweetLocal), tweetAfterRT);
-            TweetsCollection.Remove(tweetLocal);
+            Tweets.Insert(Tweets.IndexOf(tweetLocal), tweetAfterRT);
+            Tweets.Remove(tweetLocal);
         }
         private void Like(object tweetIdStr)
         {
             var tweetId = Convert.ToInt64(tweetIdStr);
 
-            var tweetLocal = TweetsCollection.Single(i => i.Id == tweetId);
+            var tweetLocal = Tweets.Single(i => i.Id == tweetId);
 
             var tweetBeforLike = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
 
@@ -124,13 +162,13 @@ namespace TwitterDotNet.ViewModels
 
             var tweetAfterLike = Tweetinvi.Tweet.GetTweet(tweetId) as Tweet;
 
-            TweetsCollection.Insert(TweetsCollection.IndexOf(tweetLocal), tweetAfterLike);
-            TweetsCollection.Remove(tweetLocal);
+            Tweets.Insert(Tweets.IndexOf(tweetLocal), tweetAfterLike);
+            Tweets.Remove(tweetLocal);
         }
         private void Reply(object tweetIdStr)
         {
             var tweetId = Convert.ToInt64(tweetIdStr);
-            NavigationService.Navigate(typeof(Views.TweetingPage), TweetsCollection.IndexOf(TweetsCollection.Single(i => i.Id == tweetId)));
+            NavigationService.Navigate(typeof(Views.TweetingPage), Tweets.IndexOf(Tweets.Single(i => i.Id == tweetId)));
         }
 
         // TopBar Primary Commands
@@ -163,7 +201,7 @@ namespace TwitterDotNet.ViewModels
         private void GotoNotifications() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
         private void GotoMessages() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
         private void GotoFindPeople() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
-        private void GotoSearch() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoSearch() => NavigationService.Navigate(typeof(Views.SearchPage));
 
             // Secondary
         private void GotoProfilPage() => NavigationService.Navigate(typeof(Views.UserProfilPage));

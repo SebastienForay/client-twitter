@@ -19,7 +19,7 @@ namespace TwitterDotNet.ViewModels
         {
             if (parameter != null)
             {
-                TweetToReply = HomeTimelinePageViewModel.TweetsCollection[(int)parameter];
+                TweetToReply = HomeTimelinePageViewModel.Tweets[(int)parameter];
 
                 TweetText = "@" + TweetToReply.CreatedBy.ScreenName + " ";
             }

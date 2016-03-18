@@ -25,6 +25,7 @@ namespace TwitterDotNet.ViewModels
 
         public UserProfilPageViewModel()
         {
+            Views.Busy.SetBusy(true, "Chargement du profil, veuillez patienter ...");
             _imageLoader = new ImageLoader();
 
             GotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
@@ -50,11 +51,6 @@ namespace TwitterDotNet.ViewModels
 
             if (UserToLoad != null)
             {
-                if (!String.IsNullOrEmpty(UserToLoad.ProfileImageUrlFullSize))
-                    ProfilPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileImageUrl400x400);
-                if (!String.IsNullOrEmpty(UserToLoad.ProfileBannerURL))
-                    BannerPicture = await _imageLoader.GetFromUrl(UserToLoad.ProfileBannerURL);
-
                 if (UserToLoad.Verified)
                     VerifiedIconVisibility = Visibility.Visible;
             }
@@ -63,30 +59,64 @@ namespace TwitterDotNet.ViewModels
                 FirstTimelineLoading();
             else
                 TimelineReloading();
+
+            Views.Busy.SetBusy(false);
+            await Task.CompletedTask;
         }
 
         private async void FirstTimelineLoading()
         {
             var newTweets = Tweetinvi.Timeline.GetUserTimeline(UserToLoad.Id);
-            foreach (var tweet in newTweets)
+
+            if (newTweets != null)
             {
-                var curTweet = tweet as Tweet;
-                Tweets.Add(curTweet);
+                foreach (var tweet in newTweets)
+                {
+                    var curTweet = tweet as Tweet;
+                    Tweets.Add(curTweet);
+                }
+
+                await Task.CompletedTask;
             }
-
-            await Task.CompletedTask;
+            else
+                FirstTimelineLoading();
         }
-
         private async void TimelineReloading()
         {
             var newTweets = Tweetinvi.Timeline.GetUserTimeline(UserToLoad.Id);
-            foreach (var tweet in newTweets)
+            if (newTweets != null)
             {
-                var curTweet = tweet as Tweet;
-                Tweets.Insert(0, curTweet);
-            }
+                foreach (var tweet in newTweets)
+                {
+                    var curTweet = tweet as Tweet;
+                    Tweets.Insert(0, curTweet);
+                }
 
-            await Task.CompletedTask;
+                await Task.CompletedTask;
+            }
+            else
+                TimelineReloading();
+        }
+        public async void LoadMoreTweets()
+        {
+            var newTweets = Tweetinvi.Timeline.GetUserTimeline(UserToLoad.Id, new UserTimelineParameters {
+                MaxId = Tweets.Last().Id,
+                MaximumNumberOfTweetsToRetrieve = 20
+            });
+            if (newTweets != null)
+            {
+                foreach (var tweet in newTweets)
+                {
+                    var curTweet = tweet as Tweet;
+
+                    if (curTweet.Id != Tweets.Last().Id)
+                        Tweets.Insert(Tweets.IndexOf(Tweets.Last()) + 1, curTweet);
+                }
+
+                await Task.CompletedTask;
+            }
+            else
+                LoadMoreTweets();
         }
 
         private ObservableCollection<Tweet> _Tweets = new ObservableCollection<Tweet>();
@@ -94,11 +124,6 @@ namespace TwitterDotNet.ViewModels
 
         private IUser _userToLoad;
         public IUser UserToLoad { get { return _userToLoad; } set { _userToLoad = value; RaisePropertyChanged(); } }
-
-        private ImageSource _profilPicture;
-        private ImageSource _bannerPicture;
-        public ImageSource ProfilPicture { get { return _profilPicture; } set { _profilPicture = value; RaisePropertyChanged(); } }
-        public ImageSource BannerPicture { get { return _bannerPicture; } set { _bannerPicture = value; RaisePropertyChanged(); } }
 
         private Visibility _verifiedIconVisibility = Visibility.Collapsed;
         public Visibility VerifiedIconVisibility { get { return _verifiedIconVisibility; } set { _verifiedIconVisibility = value; RaisePropertyChanged(); } }

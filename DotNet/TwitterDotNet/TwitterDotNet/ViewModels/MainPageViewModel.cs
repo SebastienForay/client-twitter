@@ -12,38 +12,39 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using TwitterDotNet.Services.AccountManager;
+using System.Diagnostics;
 
 namespace TwitterDotNet.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
+        public MainPageViewModel()
+        {
+            GotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
+            GotoNotificationsCommand = new RelayCommand(GotoNotifications);
+            GotoMessagesCommand = new RelayCommand(GotoMessages);
+            GotoFindPeopleCommand = new RelayCommand(GotoFindPeople);
+            GotoSearchCommand = new RelayCommand(GotoSearch);
+
+            GotoProfilPageCommand = new RelayCommand(GotoProfilPage);
+        }
+
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
+            NavigationService.ClearHistory();
+
             AppCredentials = new TwitterCredentials(TweetinviData.ConsumerKey, TweetinviData.ConsumerSecret);
             var url = CredentialsCreator.GetAuthorizationURL(AppCredentials);
+
+            if (String.IsNullOrEmpty(url))
+                NavigationService.Navigate(typeof(Views.MainPage));
+
             Uri targeturi = new Uri(url);
 
             NavigationService.Navigate(typeof(Views.LoginPage), targeturi);
-            
+
             await Task.CompletedTask;
         }
-
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {
-            await Task.CompletedTask;
-        }
-
-        public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
-        {
-            args.Cancel = false;
-            await Task.CompletedTask;
-        }
-
-        public void GotoSettings() => NavigationService.Navigate(typeof(Views.SettingsPage), 0);
-        public void GotoPrivacy() => NavigationService.Navigate(typeof(Views.SettingsPage), 1);
-        public void GotoAbout() => NavigationService.Navigate(typeof(Views.SettingsPage), 2);
-        private void GotoProfilPage() => NavigationService.Navigate(typeof(Views.UserProfilPage));
-        private void GotoHomeTimeline() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
 
         private static TweetinviData _tweetinviData = new TweetinviData();
         private static TwitterCredentials _appCredentials;
@@ -57,75 +58,31 @@ namespace TwitterDotNet.ViewModels
         private RelayCommand _gotoFindPeopleCommand;
         private RelayCommand _gotoSearchCommand;
 
-        public RelayCommand GotoHomeTimelinePageCommand
-        {
-            get
-            {
-                if (_gotoHomeTimelinePageCommand == null)
-                    _gotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
-
-                return _gotoHomeTimelinePageCommand;
-            }
-            set { _gotoHomeTimelinePageCommand = value; RaisePropertyChanged(); }
-        }
-        public RelayCommand GotoNotificationsCommand
-        {
-            get
-            {
-                if (_gotoNotificationsCommand == null)
-                    _gotoNotificationsCommand = new RelayCommand(GotoHomeTimeline);
-
-                return _gotoNotificationsCommand;
-            }
-            set { _gotoNotificationsCommand = value; RaisePropertyChanged(); }
-        }
-        public RelayCommand GotoMessagesCommand
-        {
-            get
-            {
-                if (_gotoMessagesCommand == null)
-                    _gotoMessagesCommand = new RelayCommand(GotoHomeTimeline);
-
-                return _gotoMessagesCommand;
-            }
-            set { _gotoMessagesCommand = value; RaisePropertyChanged(); }
-        }
-        public RelayCommand GotoFindPeopleCommand
-        {
-            get
-            {
-                if (_gotoFindPeopleCommand == null)
-                    _gotoFindPeopleCommand = new RelayCommand(GotoHomeTimeline);
-
-                return _gotoFindPeopleCommand;
-            }
-            set { _gotoFindPeopleCommand = value; RaisePropertyChanged(); }
-        }
-        public RelayCommand GotoSearchCommand
-        {
-            get
-            {
-                if (_gotoSearchCommand == null)
-                    _gotoSearchCommand = new RelayCommand(GotoHomeTimeline);
-
-                return _gotoSearchCommand;
-            }
-            set { _gotoSearchCommand = value; RaisePropertyChanged(); }
-        }
+        public RelayCommand GotoHomeTimelinePageCommand { get { return _gotoHomeTimelinePageCommand; } set { _gotoHomeTimelinePageCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoNotificationsCommand { get { return _gotoNotificationsCommand; } set { _gotoNotificationsCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoMessagesCommand { get { return _gotoMessagesCommand; } set { _gotoMessagesCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoFindPeopleCommand { get { return _gotoFindPeopleCommand; } set { _gotoFindPeopleCommand = value; RaisePropertyChanged(); } }
+        public RelayCommand GotoSearchCommand { get { return _gotoSearchCommand; } set { _gotoSearchCommand = value; RaisePropertyChanged(); } }
 
         // TopBar Secondary Commands
         private RelayCommand _gotoProfilPageCommand;
-        public RelayCommand GotoProfilPageCommand
-        {
-            get
-            {
-                if (_gotoProfilPageCommand == null)
-                    _gotoProfilPageCommand = new RelayCommand(GotoProfilPage);
+        public RelayCommand GotoProfilPageCommand { get { return _gotoProfilPageCommand; } set { _gotoProfilPageCommand = value; RaisePropertyChanged(); } }
 
-                return _gotoProfilPageCommand;
-            }
-            set { _gotoProfilPageCommand = value; RaisePropertyChanged(); }
-        }
+
+        // Commands Functions
+            // Primary
+        private void GotoHomeTimeline() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoNotifications() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoMessages() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoFindPeople() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+        private void GotoSearch() => NavigationService.Navigate(typeof(Views.HomeTimelinePage));
+
+
+            // Secondary
+        private void GotoProfilPage() => NavigationService.Navigate(typeof(Views.UserProfilPage));
+        public void GotoSettings() => NavigationService.Navigate(typeof(Views.SettingsPage), 0);
+        public void GotoPrivacy() => NavigationService.Navigate(typeof(Views.SettingsPage), 1);
+        public void GotoAbout() => NavigationService.Navigate(typeof(Views.SettingsPage), 2);
     }
 }
 

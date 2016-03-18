@@ -9,6 +9,7 @@ using TwitterDotNet.Services.TweetinviAPI;
 using Tweetinvi;
 using Tweetinvi.Core.Credentials;
 using System;
+using System.Threading;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using TwitterDotNet.Services.AccountManager;
@@ -31,6 +32,7 @@ namespace TwitterDotNet.ViewModels
             if (fileUsed.IsAvailable)
             {
                 Views.Busy.SetBusy(true, "Reconnexion en cours ...");
+                await Task.Delay(TimeSpan.FromSeconds(2));
                 AutoConnect();
             }
             else

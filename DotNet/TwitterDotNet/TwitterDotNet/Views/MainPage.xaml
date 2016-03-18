@@ -47,27 +47,27 @@
 
         <controls:PageHeader x:Name="pageHeader">
             <controls:PageHeader.PrimaryCommands>
-                <AppBarButton Label="Home" Command="{Binding GotoHomeTimelinePageCommand, Mode=TwoWay}">
+                <AppBarButton Label="Home" Command="{x:Bind ViewModel.GotoHomeTimelinePageCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.social.twitter.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Notifications" Command="{Binding GotoNotificationsCommand, Mode=TwoWay}">
+                <AppBarButton Label="Notifications" Command="{x:Bind ViewModel.GotoNotificationsCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.camera.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Messages" Command="{Binding GotoMessagesCommand, Mode=TwoWay}">
+                <AppBarButton Label="Messages" Command="{x:Bind ViewModel.GotoMessagesCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.image.gallery.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Trouver des personnes" Command="{Binding GotoFindPeopleCommand, Mode=TwoWay}">
+                <AppBarButton Label="Trouver des personnes" Command="{x:Bind ViewModel.GotoFindPeopleCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.user.add.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-                <AppBarButton Label="Rechercher" Command="{Binding GotoSearchCommand, Mode=TwoWay}">
+                <AppBarButton Label="Rechercher" Command="{x:Bind ViewModel.GotoSearchCommand}">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/icons/appbar.page.search.png" />
                     </AppBarButton.Icon>
@@ -79,7 +79,7 @@
             <RelativePanel.AlignLeftWithPanel>True</RelativePanel.AlignLeftWithPanel>
             <!--  secondary commands  -->
             <controls:PageHeader.SecondaryCommands>
-                <AppBarButton Command="{Binding GotoProfilPageCommand, Mode=TwoWay}" Label="Profil" />
+                <AppBarButton Command="{x:Bind ViewModel.GotoProfilPageCommand}" Label="Profil" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Voir les listes" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Temps forts" />
                 <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Comptes" />
@@ -91,4 +91,3 @@
         </controls:PageHeader>
     </Grid>
 </Page>
-
