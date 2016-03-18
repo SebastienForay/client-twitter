@@ -1,0 +1,231 @@
+﻿<Page
+    x:Class="TwitterDotNet.Views.SearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TwitterDotNet.Views"
+    xmlns:Behaviors="using:Template10.Behaviors"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:Template10.Controls"
+    xmlns:vm="using:TwitterDotNet.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <vm:SearchPageViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+    
+    <Grid x:Name="PageGrid" Background="#F5F8FA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="104" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <controls:PageHeader x:Name="pageHeader">
+            <controls:PageHeader.PrimaryCommands>
+                <AppBarButton Label="Home" Command="{x:Bind ViewModel.GotoHomeTimelinePageCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/twitter/twitter.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Notifications" Command="{x:Bind ViewModel.GotoNotificationsCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/divers/notifications.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Messages" Command="{x:Bind ViewModel.GotoMessagesCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/media/gallery.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Trouver des personnes" Command="{x:Bind ViewModel.GotoFindPeopleCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/twitter/users/follow.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Rechercher" Command="{x:Bind ViewModel.GotoSearchCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/icons/divers/search.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </controls:PageHeader.PrimaryCommands>
+            <!--  place stretched, across top  -->
+            <RelativePanel.AlignTopWithPanel>True</RelativePanel.AlignTopWithPanel>
+            <RelativePanel.AlignRightWithPanel>True</RelativePanel.AlignRightWithPanel>
+            <RelativePanel.AlignLeftWithPanel>True</RelativePanel.AlignLeftWithPanel>
+            <!--  secondary commands  -->
+            <controls:PageHeader.SecondaryCommands>
+                <AppBarButton Command="{x:Bind ViewModel.GotoProfilPageCommand}" Label="Profil" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Voir les listes" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Temps forts" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Comptes" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Paramètres" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="Aide" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
+            </controls:PageHeader.SecondaryCommands>
+        </controls:PageHeader>
+
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <TextBlock Text="Que recherchez-vous ?" Foreground="Black" />
+            <TextBox Text="{Binding SearchText, Mode=TwoWay}" Background="Transparent" Foreground="Black" />
+            <Button Content="Rechercher !" Background="LightGray" Foreground="Black" Margin="10" HorizontalAlignment="Right" Command="{Binding SearchCommand}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="2" Background="#F5F8FA">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" x:Name="TweetsSearchedViewer" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Center" Background="#F5F8FA">
+                <ListView Name="TweetsListView" ItemsSource="{Binding Tweets}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapGrid Orientation="Horizontal" MaximumRowsOrColumns="1" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="10"/>
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="BorderBrush" Value="#E1E8ED"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Tweet Grid -->
+                            <Grid x:Name="TweetGrid" Height="Auto" Width="Auto">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" /><!-- Profil Picture -->
+                                    <ColumnDefinition Width="Auto" /><!-- Tweet Content -->
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{Binding CreatedBy.ProfileImageUrl400x400}" Width="70" Height="70" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <!-- Tweet Content Grid -->
+                                <Grid Grid.Column="1" Margin="10, 0, 0, 0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30" /><!-- User Name + Tweet Date -->
+                                        <RowDefinition Height="Auto" /><!-- Tweet Text -->
+                                        <RowDefinition Height="Auto" /><!-- Tweet Medias -->
+                                        <RowDefinition Height="Auto" /><!-- Tweet Buttons (like, RT, reply) -->
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/><!-- User Name -->
+                                            <ColumnDefinition Width="*"/><!-- Tweet Date -->
+                                        </Grid.ColumnDefinitions>
+                                        <Button Background="Transparent" Padding="0, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.GotoUserProfilViaIdCommand}" CommandParameter="{Binding CreatedBy.UserIdentifier.IdStr}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding CreatedBy.Name}" FontWeight="Bold" FontSize="16" />
+                                                <TextBlock Margin="5, 2, 0, 0" Text="@" FontSize="13" />
+                                                <TextBlock Margin="0, 2, 0, 0" Text="{Binding CreatedBy.ScreenName}" FontSize="13"  />
+                                            </StackPanel>
+                                        </Button>
+                                        <!-- Tweet Date -->
+                                        <TextBlock Grid.Column="1" HorizontalAlignment="Right" Text="{Binding CreatedAt}" FontSize="13"/>
+                                    </Grid>
+
+                                    <!-- Tweet Text -->
+                                    <TextBlock Grid.Row="1" Text="{Binding Text}" TextWrapping="Wrap" />
+
+                                    <!-- Tweet Medias -->
+                                    <ScrollViewer Grid.Row="2" Width="{Binding ElementName=TweetGrid, Path=Width}" HorizontalAlignment="Left"
+                                            VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled"
+                                            HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled">
+                                        <GridView ItemsSource="{Binding Media}">
+                                            <GridView.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapGrid Orientation="Horizontal" Margin="0, 0, 10, 0"/>
+                                                </ItemsPanelTemplate>
+                                            </GridView.ItemsPanel>
+                                            <GridView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Image Source="{Binding MediaURL}"/>
+                                                </DataTemplate>
+                                            </GridView.ItemTemplate>
+                                        </GridView>
+                                    </ScrollViewer>
+
+                                    <!-- Tweet Buttons -->
+                                    <Grid Grid.Row="3" Margin="0, 20, 0, 0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/><!-- Reply button -->
+                                            <ColumnDefinition Width="Auto"/><!-- RT Button -->
+                                            <ColumnDefinition Width="Auto"/><!-- Like Button -->
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Grid.Column="0" Background="Transparent" Padding="-2, -3, 0, 0" Width="80" Height="25" Command="{Binding ElementName=TweetsListView, Path=DataContext.ReplyCommand}" CommandParameter="{Binding IdStr}">
+                                            <Image Source="ms-appx:///Assets/icons/twitter/tweets/reply.png" Width="25" Height="25"/>
+                                        </Button>
+                                        <Button Grid.Column="1" Background="Transparent" Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 0, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.RetweetCommand}" CommandParameter="{Binding IdStr}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="ms-appx:///Assets/icons/twitter/tweets/retweet.png" Width="25" Height="25"/>
+                                                <TextBlock Text="{Binding RetweetCount}" />
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Grid.Column="2" Background="Transparent" Padding="-2, -3, 0, 0" Width="80" Height="25" Margin="10, 0, 10, 0" Command="{Binding ElementName=TweetsListView, Path=DataContext.LikeCommand}" CommandParameter="{Binding IdStr}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="ms-appx:///Assets/icons/twitter/tweets/heart.png" Width="25" Height="25"/>
+                                                <TextBlock Text="{Binding FavoriteCount}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+
+            <ScrollViewer Grid.Column="1" x:Name="UsersSearchedViewer" Background="#F5F8FA" HorizontalContentAlignment="Center">
+
+                <GridView Name="UsersGridView" ItemsSource="{Binding Users}">
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="2"/>
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid MaxWidth="300" Height="Auto" Margin="10" Background="White">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="100"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Background="LightBlue" Width="300" Height="100">
+                                    <Image Source="{Binding ProfileBannerURL}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20, -20, 0, 0">
+                                    <StackPanel BorderBrush="White" BorderThickness="3">
+                                        <Image Source="{Binding ProfileImageUrlFullSize}" Width="70" Height="70" />
+                                    </StackPanel>
+
+                                    <Button IsEnabled="False" Content="Suivre !" Background="LightGray" Foreground="Black" Margin="100, 0, 0, 0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2">
+                                    <Button Background="Transparent" Command="{Binding ElementName=TweetsListView, Path=DataContext.GotoUserProfilViaIdCommand}" CommandParameter="{Binding UserIdentifier.IdStr}">
+                                        <StackPanel Orientation="Vertical" Padding="0">
+                                            <TextBlock Text="{Binding Name}" Foreground="Black" FontWeight="Bold" FontSize="16"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="@" Foreground="Gray" FontSize="13"/>
+                                                <TextBlock Text="{Binding ScreenName}" Foreground="Gray" FontSize="13"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="Gray" FontSize="14" Margin="0, 0, 0, 50"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </ScrollViewer>
+        </Grid>
+        
+    </Grid>
+</Page>
