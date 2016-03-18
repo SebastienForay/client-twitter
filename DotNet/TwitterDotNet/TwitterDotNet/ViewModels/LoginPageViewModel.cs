@@ -20,21 +20,25 @@ namespace TwitterDotNet.ViewModels
 
             var fileName = "accounts.json";
             var folderUsed = ApplicationData.Current.LocalFolder;
-            var folderOperation = CreationCollisionOption.OpenIfExists;
-            var fileUsed = await folderUsed.CreateFileAsync(fileName, folderOperation);
 
-            if (fileUsed.IsAvailable)
+            try
             {
-                Views.Busy.SetBusy(true, "Reconnexion en cours ...");
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                AutoConnect();
+                var fileUsed = await folderUsed.GetFileAsync(fileName);
+                if (fileUsed.IsAvailable)
+                {
+                    Views.Busy.SetBusy(true, "Reconnexion en cours ...");
+                    await Task.Delay(TimeSpan.FromSeconds(2));
+                    AutoConnect();
+                }
             }
-            else
+            catch (System.IO.FileNotFoundException e)
             {
                 WebViewUriSource = new Uri(parameter.ToString());
-                PinCodeTextBoxVisibility = Visibility.Visible;
-                ValidateButtonVisibility = Visibility.Visible;
             }
+
+
+            PinCodeTextBoxVisibility = Visibility.Visible;
+            ValidateButtonVisibility = Visibility.Visible;
 
             Views.Busy.SetBusy(false);
 
