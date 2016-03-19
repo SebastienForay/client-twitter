@@ -30,6 +30,8 @@ namespace TwitterDotNet.ViewModels
             RetweetCommand = new RelayCommand<object>(param => Retweet((string)param));
             LikeCommand = new RelayCommand<object>(param => Like((string)param));
             ReplyCommand = new RelayCommand<object>(param => Reply((string)param));
+            DeleteTweetCommand = new RelayCommand<object>(param => Delete((string)param));
+
             GotoUserProfilViaIdCommand = new RelayCommand<object>(param => NavigationService.Navigate(typeof(Views.UserProfilPage), param));
         }
 
@@ -128,7 +130,22 @@ namespace TwitterDotNet.ViewModels
         public RelayCommand<object> ReplyCommand { get { return _replyCommand; } set { _replyCommand = value; } }
         private RelayCommand<object> _gotoUserProfilViaIdCommand;
         public RelayCommand<object> GotoUserProfilViaIdCommand { get { return _gotoUserProfilViaIdCommand; } set { _gotoUserProfilViaIdCommand = value; } }
-        
+        private RelayCommand<object> _deleteTweetCommand;
+        public RelayCommand<object> DeleteTweetCommand { get { return _deleteTweetCommand; } set { _deleteTweetCommand = value; } }
+
+        private void Delete(object tweetIdStr)
+        {
+            var tweetId = Convert.ToInt64(tweetIdStr);
+            var theTweet = Tweets.Single(i => i.Id == tweetId);
+
+            if (theTweet.CreatedBy.Id == Tweetinvi.User.GetAuthenticatedUser().Id)
+            {
+                if (theTweet.Retweeted) Tweetinvi.Tweet.UnRetweet(tweetId);
+                else Tweetinvi.Tweet.DestroyTweet(tweetId);
+
+                Tweets.Remove(theTweet);
+            }
+        }
         private void Retweet(object tweetIdStr)
         {
             var tweetId = Convert.ToInt64(tweetIdStr);
