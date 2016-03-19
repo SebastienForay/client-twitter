@@ -6,7 +6,6 @@ using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Command;
 using System;
 using Windows.UI.Xaml;
-using TwitterDotNet.Services.ImageLoader;
 using Tweetinvi.Core.Interfaces;
 using Tweetinvi.Core.Parameters;
 using System.Collections.ObjectModel;
@@ -16,12 +15,9 @@ namespace TwitterDotNet.ViewModels
 {
     public class UserProfilPageViewModel : ViewModelBase
     {
-        private readonly IImageLoader _imageLoader;
-
         public UserProfilPageViewModel()
         {
             Views.Busy.SetBusy(true, "Chargement du profil, veuillez patienter ...");
-            _imageLoader = new ImageLoader();
 
             GotoHomeTimelinePageCommand = new RelayCommand(GotoHomeTimeline);
             GotoNotificationsCommand = new RelayCommand(GotoNotifications);

@@ -47,8 +47,7 @@ namespace TwitterDotNet.ViewModels
             }
         }
         public string TweetTextLengthRemaining { get { return _tweetTextLengthRemaining; } set { _tweetTextLengthRemaining = value; RaisePropertyChanged(); } }
-
-
+        
         private RelayCommand _tweetCommand;
         public RelayCommand TweetCommand { get { return _tweetCommand; } set { _tweetCommand = value; } }
         
